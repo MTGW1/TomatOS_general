@@ -1,0 +1,213 @@
+{
+  "method": "7zip",
+  "original_file": "TomatOS_run.tar",
+  "original_size": 1821485056,
+  "original_hash": "15821dea769e178d609235380660ef510f4047314fa9684b1063fcf9fca6aa68",
+  "chunk_size_mb": 50,
+  "total_volumes": 33,
+  "volumes": [
+    {
+      "volume_num": 1,
+      "volume_file": "TomatOS_run.tar.7z.001",
+      "volume_size": 52428800,
+      "volume_hash": "6f0093dfd13e242f21b9df1fa0d44f4e9ea24a14ac723c3552126de637501bb2"
+    },
+    {
+      "volume_num": 2,
+      "volume_file": "TomatOS_run.tar.7z.002",
+      "volume_size": 52428800,
+      "volume_hash": "6af2c43ee12587a4dc347f5ef95a2cc3f9995a2fde025dc0dcbc61260dd58b1c"
+    },
+    {
+      "volume_num": 3,
+      "volume_file": "TomatOS_run.tar.7z.003",
+      "volume_size": 52428800,
+      "volume_hash": "40db7a351dde373d7aa5f70b6bc9e6b46701fafee811ce20fdec32dfc9c1ed64"
+    },
+    {
+      "volume_num": 4,
+      "volume_file": "TomatOS_run.tar.7z.004",
+      "volume_size": 52428800,
+      "volume_hash": "b06ba71eebb77c8b4e48db1c7ffe2cdd47afcc623051f83ecc3b9a84d4e54cc7"
+    },
+    {
+      "volume_num": 5,
+      "volume_file": "TomatOS_run.tar.7z.005",
+      "volume_size": 52428800,
+      "volume_hash": "6c446b5460a5ec36e242d9ed83bdaa4796d78753a8083830633589280d0b4cca"
+    },
+    {
+      "volume_num": 6,
+      "volume_file": "TomatOS_run.tar.7z.006",
+      "volume_size": 52428800,
+      "volume_hash": "66a999c741daa11ed306315804f26c75193196129f5cda82bf343cba85202d36"
+    },
+    {
+      "volume_num": 7,
+      "volume_file": "TomatOS_run.tar.7z.007",
+      "volume_size": 52428800,
+      "volume_hash": "30c96bd04f691a0c44107d298e142d6163e2ad6b36daf2fbe572460b22c80c04"
+    },
+    {
+      "volume_num": 8,
+      "volume_file": "TomatOS_run.tar.7z.008",
+      "volume_size": 52428800,
+      "volume_hash": "035db07facebbee91ee819aeec911627b1d38a44fcbd2d1c3040b40af6477727"
+    },
+    {
+      "volume_num": 9,
+      "volume_file": "TomatOS_run.tar.7z.009",
+      "volume_size": 52428800,
+      "volume_hash": "ba3adc69f87e3876c48f20dfc56d0a53bb08320aa0e47c5060654ceca69667eb"
+    },
+    {
+      "volume_num": 10,
+      "volume_file": "TomatOS_run.tar.7z.010",
+      "volume_size": 52428800,
+      "volume_hash": "4ba6a748b111b48827bace09571dccfb199b08747fd44ab4794a39ca688d1e45"
+    },
+    {
+      "volume_num": 11,
+      "volume_file": "TomatOS_run.tar.7z.011",
+      "volume_size": 52428800,
+      "volume_hash": "70a0bdbde122298359b2175275f016c31ad0237f151d840bd8b163a13d4b830c"
+    },
+    {
+      "volume_num": 12,
+      "volume_file": "TomatOS_run.tar.7z.012",
+      "volume_size": 52428800,
+      "volume_hash": "e0fb0951b801519864bd8d9332ca71927fd314bdb039eb87db081fa6fc3e43dc"
+    },
+    {
+      "volume_num": 13,
+      "volume_file": "TomatOS_run.tar.7z.013",
+      "volume_size": 52428800,
+      "volume_hash": "1d6f4dbf9ff39d0a5e9a6878ca55d8ccf51f2debd81494206435f6d9271bbfc1"
+    },
+    {
+      "volume_num": 14,
+      "volume_file": "TomatOS_run.tar.7z.014",
+      "volume_size": 52428800,
+      "volume_hash": "8e3cea493d9bfac43c92756411bef6f2450a2c2cd4de70533c01eea9b1c460d2"
+    },
+    {
+      "volume_num": 15,
+      "volume_file": "TomatOS_run.tar.7z.015",
+      "volume_size": 52428800,
+      "volume_hash": "c1d5677c3478417b3ad09f77508c2e42ee7e69a52063764bd82f680f4d51e73c"
+    },
+    {
+      "volume_num": 16,
+      "volume_file": "TomatOS_run.tar.7z.016",
+      "volume_size": 52428800,
+      "volume_hash": "e3245ff8e1e97cc8dc610e762802cfd5c3455c9902f5672b951cc8c5d621981a"
+    },
+    {
+      "volume_num": 17,
+      "volume_file": "TomatOS_run.tar.7z.017",
+      "volume_size": 52428800,
+      "volume_hash": "17537b2ef7af2f84bc57faea551dacdd3a4d109ad2c24d8dbeae2404e23a2e64"
+    },
+    {
+      "volume_num": 18,
+      "volume_file": "TomatOS_run.tar.7z.018",
+      "volume_size": 52428800,
+      "volume_hash": "504080de9024bfe863d3f618486faac3933a83ef4aec1c715ba32926ab6dadc5"
+    },
+    {
+      "volume_num": 19,
+      "volume_file": "TomatOS_run.tar.7z.019",
+      "volume_size": 52428800,
+      "volume_hash": "b5b4ef52a442513fc1a8629ca5b482f083137d93de8ef1f106de88a18293fe08"
+    },
+    {
+      "volume_num": 20,
+      "volume_file": "TomatOS_run.tar.7z.020",
+      "volume_size": 52428800,
+      "volume_hash": "3a8983a761e93005610b023117930129d4def66bda82729068d72cb502903acf"
+    },
+    {
+      "volume_num": 21,
+      "volume_file": "TomatOS_run.tar.7z.021",
+      "volume_size": 52428800,
+      "volume_hash": "6ea153db801df3084870d833009a40b63447d14a008a210cd086125afd07fc3b"
+    },
+    {
+      "volume_num": 22,
+      "volume_file": "TomatOS_run.tar.7z.022",
+      "volume_size": 52428800,
+      "volume_hash": "3a746d39a6c92e29d60d30226d891c54bc9e431a7952c57fbfdf5a8a631ce87d"
+    },
+    {
+      "volume_num": 23,
+      "volume_file": "TomatOS_run.tar.7z.023",
+      "volume_size": 52428800,
+      "volume_hash": "e6c6a9533b3883f2c201ec99d9e72f51d208d807f69de6c0d999a5e8047cbbca"
+    },
+    {
+      "volume_num": 24,
+      "volume_file": "TomatOS_run.tar.7z.024",
+      "volume_size": 52428800,
+      "volume_hash": "f5f41cc89eb089dc71a24b928fdf3e62dfc30bba4e92c23ea97bdb36a29a1e11"
+    },
+    {
+      "volume_num": 25,
+      "volume_file": "TomatOS_run.tar.7z.025",
+      "volume_size": 52428800,
+      "volume_hash": "044622c1ea35daa3ea31c260ef6b6eb11a8f5d65c7dfc89bfd9c8a9f5e22ca70"
+    },
+    {
+      "volume_num": 26,
+      "volume_file": "TomatOS_run.tar.7z.026",
+      "volume_size": 52428800,
+      "volume_hash": "2f997b035474d0381cefc8f33bea82bd402fc01b522d2c9d1a047eb793f4a914"
+    },
+    {
+      "volume_num": 27,
+      "volume_file": "TomatOS_run.tar.7z.027",
+      "volume_size": 52428800,
+      "volume_hash": "48b751a3589c60f0e5eeb0c4a648cfaf0afa0fb87df365bb78b284893bc01d83"
+    },
+    {
+      "volume_num": 28,
+      "volume_file": "TomatOS_run.tar.7z.028",
+      "volume_size": 52428800,
+      "volume_hash": "e8bc1cd8083a6b736b214c51c7a20ebef8114d155c7069be909fddc6dc106b34"
+    },
+    {
+      "volume_num": 29,
+      "volume_file": "TomatOS_run.tar.7z.029",
+      "volume_size": 52428800,
+      "volume_hash": "ad2b156a9fdaf58977c3dfbbacfb5b623836b53b5fba8289abb186b785851ec7"
+    },
+    {
+      "volume_num": 30,
+      "volume_file": "TomatOS_run.tar.7z.030",
+      "volume_size": 52428800,
+      "volume_hash": "4585c384cb032d9344d9d084e38521b56bedab6cf53232a3a70914fb1d04a2da"
+    },
+    {
+      "volume_num": 31,
+      "volume_file": "TomatOS_run.tar.7z.031",
+      "volume_size": 52428800,
+      "volume_hash": "ab82bad40e2755e4d45877b5e97ecaa6c93bd8785913b5a501bc7f57d7d68620"
+    },
+    {
+      "volume_num": 32,
+      "volume_file": "TomatOS_run.tar.7z.032",
+      "volume_size": 52428800,
+      "volume_hash": "b896a375df98f8d689f7413cd82eb70aab8f641e70af4556bcf5c45cd6e1e2d7"
+    },
+    {
+      "volume_num": 33,
+      "volume_file": "TomatOS_run.tar.7z.033",
+      "volume_size": 51110046,
+      "volume_hash": "02e74110d85c1a7173681e7224af52b850a35ffc161ec6372eaccbbd38fbf255"
+    }
+  ],
+  "compression_info": {
+    "format": "7z",
+    "level": "maximum",
+    "multithreaded": true
+  }
+}

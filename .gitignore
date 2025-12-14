@@ -1,0 +1,18 @@
+# Byte-compiled / optimized / DLL files
+# *.json
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.log
+README_SPLIT.md
+split_for_git.bat
+split_large_files.py
+smart_file_splitter.py
+bot/__pycache__/
+message_adapters/__pycache__/
+plugins/__pycache__/
+
+# 大文件（已拆分，请勿直接上传）
+plugins/TomatOS_run/TomatOS_run.tar
