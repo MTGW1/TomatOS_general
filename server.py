@@ -20,6 +20,7 @@ from commands import CommandHandler
 from dataclasses import dataclass
 from bot_app import TomatOS_bot
 from bot.api import bot_name
+from message_adapters.message_core import Messagebase
 
 @dataclass
 class TomatOS_conn:
@@ -57,8 +58,8 @@ class TomatOSServer:
         started_adapters = set()
         for adapter in self.bot_app.msg_handler.ada:
             # 跳过 WebTerminal，因为它已经由 server.py 的主逻辑处理了
-            if adapter.adapter == "TomatOS_WebTerminal":
-                continue
+            # if adapter.adapter == "TomatOS_WebTerminal": # 注释掉这段以允许多实例
+            #     continue
             
             # 检查是否已经启动过相同的适配器
             adapter_key = f"{adapter.adapter}:{getattr(adapter, 'conn_host', '0.0.0.0')}:{getattr(adapter, 'conn_port', 0)}"
@@ -104,17 +105,132 @@ class TomatOSServer:
                                 if msg_base.text:
                                     cmd_response = await self.bot_app.msg_handler.find_and_execute(msg_base.text)
                                     if cmd_response:
-                                        # TODO: 发送命令回复
+                                        # 发送命令回复
                                         logger.info(f"命令执行结果: {cmd_response}")
+                                        # 通过适配器发送回复
+                                        if hasattr(adapter, "send_message"):
+                                            reply_msg = Messagebase(
+                                                adapter=adapter.adapter,
+                                                text=str(cmd_response),
+                                                image=[],
+                                                file=[],
+                                                video=[],
+                                                audio=[],
+                                                at=[],
+                                                reply_to=None,
+                                                timestamp=int(datetime.now().timestamp()),
+                                                messageid=str(int(datetime.now().timestamp())),
+                                                userid=10000,
+                                                username=f"{bot_name}@TomatOS",
+                                                usercard="",
+                                                userrole="assistant",
+                                                conversation_id="web_terminal",
+                                                is_group=False,
+                                                event_type="message",
+                                                raw_data={}
+                                            )
+                                            await adapter.send_message(reply_msg, ws)
                                         continue
 
                                 # 2. 转发给 bot_app 处理 (AI 聊天)
                                 reply = await self.bot_app.handle_chat_message(msg_base)
                                 if reply:
                                     logger.info(f"Bot 回复: {reply}")
-                                    # TODO: 实现发送逻辑
+                                    # 通过适配器发送回复
+                                    if hasattr(adapter, "send_message"):
+                                        reply_msg = Messagebase(
+                                            adapter=adapter.adapter,
+                                            text=str(reply),
+                                            image=[],
+                                            file=[],
+                                            video=[],
+                                            audio=[],
+                                            at=[],
+                                            reply_to=None,
+                                            timestamp=int(datetime.now().timestamp()),
+                                            messageid=str(int(datetime.now().timestamp())),
+                                            userid=10000,
+                                            username=f"{bot_name}@TomatOS",
+                                            usercard="",
+                                            userrole="assistant",
+                                            conversation_id="web_terminal",
+                                            is_group=False,
+                                            event_type="message",
+                                            raw_data={}
+                                        )
+                                        await adapter.send_message(reply_msg, ws)
                         except json.JSONDecodeError:
-                            pass
+                            # 如果不是JSON，尝试作为纯文本消息处理
+                            text_content = msg.data
+                            if text_content:
+                                # 创建简单的消息对象
+                                simple_data = {
+                                    "post_type": "message",
+                                    "text": text_content,
+                                    "timestamp": datetime.now().isoformat(),
+                                    "userid": 10001,
+                                    "username": "WebClient_user",
+                                    "conversation_id": "web_terminal",
+                                    "is_group": False
+                                }
+                                if hasattr(adapter, "handle_message"):
+                                    msg_base = await adapter.handle_message(simple_data)
+                                    if msg_base and msg_base.text:
+                                        # 尝试作为命令执行
+                                        cmd_response = await self.bot_app.msg_handler.find_and_execute(msg_base.text)
+                                        if cmd_response:
+                                            logger.info(f"命令执行结果: {cmd_response}")
+                                            # 发送命令回复
+                                            if hasattr(adapter, "send_message"):
+                                                reply_msg = Messagebase(
+                                                    adapter=adapter.adapter,
+                                                    text=str(cmd_response),
+                                                    image=[],
+                                                    file=[],
+                                                    video=[],
+                                                    audio=[],
+                                                    at=[],
+                                                    reply_to=None,
+                                                    timestamp=int(datetime.now().timestamp()),
+                                                    messageid=str(int(datetime.now().timestamp())),
+                                                    userid=10000,
+                                                    username=f"{bot_name}@TomatOS",
+                                                    usercard="",
+                                                    userrole="assistant",
+                                                    conversation_id="web_terminal",
+                                                    is_group=False,
+                                                    event_type="message",
+                                                    raw_data={}
+                                                )
+                                                await adapter.send_message(reply_msg, ws)
+                                        else:
+                                            # 转发给 bot_app 处理
+                                            reply = await self.bot_app.handle_chat_message(msg_base)
+                                            if reply:
+                                                logger.info(f"Bot 回复: {reply}")
+                                                # 发送AI回复
+                                                if hasattr(adapter, "send_message"):
+                                                    reply_msg = Messagebase(
+                                                        adapter=adapter.adapter,
+                                                        text=str(reply),
+                                                        image=[],
+                                                        file=[],
+                                                        video=[],
+                                                        audio=[],
+                                                        at=[],
+                                                        reply_to=None,
+                                                        timestamp=int(datetime.now().timestamp()),
+                                                        messageid=str(int(datetime.now().timestamp())),
+                                                        userid=10000,
+                                                        username=f"{bot_name}@TomatOS",
+                                                        usercard="",
+                                                        userrole="assistant",
+                                                        conversation_id="web_terminal",
+                                                        is_group=False,
+                                                        event_type="message",
+                                                        raw_data={}
+                                                    )
+                                                    await adapter.send_message(reply_msg, ws)
                     elif msg.type == aiohttp.WSMsgType.ERROR:
                         logger.error(f'ws连接错误 {ws.exception()}')
             finally:
