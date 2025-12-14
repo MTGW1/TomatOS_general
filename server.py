@@ -45,6 +45,7 @@ class TomatOSServer:
         self.clients = {}
         self.bot_app = TomatOS_bot()
         self.command_handler = CommandHandler(self)
+        self.adapter_sites = []  # 存储所有适配器站点的引用
 
     async def start_bot(self):
         if self.bot_app:
@@ -244,6 +245,14 @@ class TomatOSServer:
         # 设置 reuse_port 和 reuse_address 以避免 TIME_WAIT 状态导致的端口占用问题
         site = web.TCPSite(runner, host, port, reuse_port=True, reuse_address=True)
         await site.start()
+        # 存储站点引用以便后续清理
+        self.adapter_sites.append({
+            'adapter': adapter.adapter,
+            'runner': runner,
+            'site': site,
+            'host': host,
+            'port': port
+        })
         logger.info(f"适配器 {adapter.adapter} 监听在 ws://{host}:{port}")
 
     def generate_color(self, password, salt=""):
@@ -621,6 +630,28 @@ class TomatOSServer:
         output = f"{now_dt.strftime('%H:%M:%S')} {uptime_str},  {users} user{'s' if users!=1 else ''},  load average: {load[0]:.2f}, {load[1]:.2f}, {load[2]:.2f}"
         await self.send_output(ws, f'<span class="output">{output}</span>')
 
+    async def cleanup_adapters(self):
+        """清理所有适配器站点"""
+        if not self.adapter_sites:
+            return
+            
+        logger.info(f"正在清理 {len(self.adapter_sites)} 个适配器站点...")
+        for site_info in self.adapter_sites:
+            try:
+                adapter_name = site_info['adapter']
+                site = site_info['site']
+                runner = site_info['runner']
+                
+                logger.info(f"停止适配器 {adapter_name} 站点...")
+                await site.stop()
+                await runner.cleanup()
+                logger.info(f"适配器 {adapter_name} 已停止")
+            except Exception as e:
+                logger.error(f"停止适配器 {site_info.get('adapter', 'unknown')} 时出错: {e}")
+        
+        self.adapter_sites.clear()
+        logger.info("所有适配器站点已清理")
+
     def startup():
         pass
 
@@ -651,27 +682,59 @@ async def logging_middleware(app, handler):
 async def console_input_loop(server: TomatOSServer):
     """控制台输入循环"""
     logger.info("控制台输入已就绪")
-    loop = asyncio.get_event_loop()
-    while True:
-        try:
-            cmd = await loop.run_in_executor(None, input, "")
+    try:
+        while True:
+            # 使用 asyncio 创建异步输入任务
+            loop = asyncio.get_event_loop()
+            
+            # 创建一个 Future 来等待输入
+            future = loop.create_future()
+            
+            def on_input_ready():
+                try:
+                    line = sys.stdin.readline()
+                    if not line:
+                        future.set_exception(EOFError())
+                    else:
+                        future.set_result(line.rstrip('\n'))
+                except Exception as e:
+                    future.set_exception(e)
+            
+            # 在单独的线程中读取输入
+            loop.run_in_executor(None, on_input_ready)
+            
+            try:
+                # 等待输入或取消
+                cmd = await asyncio.wait_for(future, timeout=0.1)
+            except asyncio.TimeoutError:
+                # 超时，继续循环以检查取消
+                continue
+            except asyncio.CancelledError:
+                # 任务被取消，退出循环
+                logger.info("控制台输入循环被取消")
+                break
+            except EOFError:
+                logger.info("检测到 EOF，退出控制台输入循环")
+                break
+            
             if cmd:
                 if cmd.lower() in ["exit", "quit"]:
-                    # 我们不能直接退出，因为这会杀死服务器
-                    # 但我们可以停止机器人
-                    await server.bot_app.bot_run_command("stop")
-                    logger.info("机器人已停止")
+                    # 发送停止信号到主循环
+                    logger.info("收到退出命令，正在关闭服务器...")
+                    # 这里我们无法直接停止服务器，但可以记录日志
+                    print("\n请使用 Ctrl+C 关闭服务器")
                     continue
                 
                 # Pass to bot
                 res = await server.bot_app.handle_console_input(cmd)
                 if res:
                     print(res)
-        except EOFError:
-            break
-        except Exception as e:
-            logger.error(f"控制台错误: {e}")
-            await asyncio.sleep(1)
+    except asyncio.CancelledError:
+        logger.info("控制台输入循环被取消")
+        raise
+    except Exception as e:
+        logger.error(f"Console input error: {e}")
+        raise
 
 async def on_startup(app):
     server = app['server']
@@ -680,7 +743,8 @@ async def on_startup(app):
     # Start console loop in background
     asyncio.create_task(console_input_loop(server))
 
-def main():
+async def main_async():
+    """异步主函数"""
     server = TomatOSServer()
     app = web.Application(middlewares=[logging_middleware])
     app['server'] = server
@@ -694,9 +758,58 @@ def main():
         web.get('/ws', server.handle_websocket),
         web.static('/', web_dir)
     ])
+
+    self_pid = os.getpid()
     
-    print("服务器启动喵~ 监听端口: http://0.0.0.0:8765")
-    web.run_app(app, host='0.0.0.0', port=8765)
+    print(f"服务器启动喵~ 监听端口: http://0.0.0.0:8765 (PID: {self_pid})")
+    
+    # 创建 runner 以便我们可以控制关闭过程
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', 8765)
+    await site.start()
+    
+    try:
+        # 保持服务器运行
+        while True:
+            await asyncio.sleep(1)
+    except asyncio.CancelledError:
+        # 收到取消信号，开始清理
+        pass
+    finally:
+        # 清理所有资源
+        print("\n正在关闭服务器...")
+        await server.cleanup_adapters()
+        await runner.cleanup()
+        print("服务器已关闭喵~")
+
+def main():
+    """同步主函数"""
+    # 创建事件循环
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
+    try:
+        # 运行异步主函数
+        main_task = loop.create_task(main_async())
+        loop.run_until_complete(main_task)
+    except KeyboardInterrupt:
+        print("\n收到关闭信号，正在优雅关闭...")
+        # 取消所有任务
+        tasks = asyncio.all_tasks(loop)
+        for task in tasks:
+            task.cancel()
+        
+        # 等待所有任务完成取消
+        loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
+        
+        # 关闭事件循环
+        loop.close()
+        print("服务器已完全关闭喵~")
+    except Exception as e:
+        print(f"服务器运行出错: {e}")
+        loop.close()
+        raise
 
 def test():
 
